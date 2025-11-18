@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pago - Félix Felices</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(180deg, #ffb3c6, #fff2f7);
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        width: 380px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        border: 3px solid #ff4f81;
+    }
+
+    h1 {
+        color: #ff4f81;
+        text-align: center;
+    }
+
+    .pago-total {
+        background: #ff4f81;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 20px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .opcion-pago {
+        margin: 15px 0;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .formulario {
+        margin-top: 15px;
+        padding: 10px;
+        background: #fafafa;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        display: none;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+    #pagarBtn {
+        background: #28a745;
+        color: white;
+    }
+
+    #pagarBtn:disabled {
+        background: gray;
+        cursor: not-allowed;
+    }
+
+    #cancelarBtn {
+        background: #ff4f81;
+        color: white;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Método de pago</h1>
+    <div class="pago-total">Total: $<span id="total"></span></div>
+
+    <label class="opcion-pago">
+        <input type="radio" name="metodo" value="tarjeta"> Pagar con tarjeta 💳
+    </label>
+
+    <label class="opcion-pago">
+        <input type="radio" name="metodo" value="transferencia"> Transferencia bancaria 💰
+    </label>
+
+    <!-- TARJETA -->
+    <div class="formulario" id="formTarjeta">
+        <h3>Datos de tarjeta</h3>
+        <input type="text" placeholder="Nombre completo" id="nombreTarjeta">
+        <input type="text" placeholder="Número de tarjeta" maxlength="16" id="numTarjeta">
+        <input type="text" placeholder="MM/AA" maxlength="5" id="fechaTarjeta">
+        <input type="text" placeholder="CVV" maxlength="3" id="cvvTarjeta">
+    </div>
+
+    <!-- TRANSFERENCIA -->
+    <div class="formulario" id="formTransferencia">
+        <h3>Transferencia bancaria:</h3>
+        <p><b>Número de cuenta:</b> 1234 5678 9012</p>
+        <p><b>Banco:</b> BBVA</p>
+        <input type="text" placeholder="Tu nombre" id="nombreTrans">
+        <input type="text" placeholder="Comprobante de pago (Folio)" id="folioTrans">
+    </div>
+
+    <button id="pagarBtn" disabled>Pagar ahora</button>
+    <button id="cancelarBtn" onclick="regresar()">Cancelar y volver</button>
+
+</div>
+
+<script>
+    const totalElement = document.getElementById("total");
+    const pagarBtn = document.getElementById("pagarBtn");
+    const metodoInputs = document.getElementsByName("metodo");
+
+    const tarjetaForm = document.getElementById("formTarjeta");
+    const transForm = document.getElementById("formTransferencia");
+
+    // OBTENER TOTAL POR URL
+    const params = new URLSearchParams(window.location.search);
+    let total = params.get("total") || 0;
+    totalElement.textContent = total;
+
+    metodoInputs.forEach(radio => {
+        radio.addEventListener("change", () => {
+            pagarBtn.disabled = false;
+
+            if (radio.value === "tarjeta") {
+                tarjetaForm.style.display = "block";
+                transForm.style.display = "none";
+            } else {
+                tarjetaForm.style.display = "none";
+                transForm.style.display = "block";
+            }
+        });
+    });
+
+    pagarBtn.addEventListener("click", () => {
+        alert("🎉 ¡Pago registrado con éxito!\nGracias por tu compra 💖");
+        window.location.href = "index.html";
+    });
+
+    function regresar() {
+        window.location.href = "compras.html";
+    }
+</script>
+
+</body>
+</html>

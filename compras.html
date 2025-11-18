@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Comprar Pastel - Félix Felices</title>
+
+<!-- EXCEL -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(#ffe0ed, #fff8fc);
+  border: 15px solid #ff4f81;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  margin-top: 20px;
+  color: #ff2975;
+  text-shadow: 2px 2px #ff9bb9;
+}
+
+.section {
+  width: 90%;
+  background: #fff;
+  margin: 15px 0;
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid #ff9bb9;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 2px solid #ffb3ca;
+}
+
+.add-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border:none;
+  border-radius: 8px;
+  background: #ff4f81;
+  color:white;
+  cursor:pointer;
+}
+
+.add-btn:hover { background: #e71856; }
+
+#carrito {
+  position: sticky;
+  top: 10px;
+  background: white;
+  border: 3px solid #ff4f81;
+  border-radius: 10px;
+  padding: 15px;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  background: #fff7fa;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.item button {
+  background: #ff2d6a;
+  border:none;
+  border-radius: 5px;
+  color:white;
+  cursor:pointer;
+  padding: 2px 6px;
+}
+
+.total {
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
+  color: #e71856;
+}
+
+.big-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 15px;
+  background: #ff4f81;
+  color:white;
+  border:none;
+  border-radius: 10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.big-button:hover { background:#d90f4e; }
+
+#limpiar {
+  background:#777;
+}
+#limpiar:hover { background:#444; }
+
+#salir {
+  background:#111;
+}
+#salir:hover { background:#444; }
+
+#modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right:0;
+  bottom:0;
+  display:none;
+  justify-content: center;
+  align-items:center;
+  background: rgba(0,0,0,0.7);
+}
+
+#modalContent {
+  background:white;
+  padding: 20px;
+  border-radius: 20px;
+  width: 450px;
+  text-align:center;
+  box-shadow:0 0 20px #000;
+  max-height:90vh;
+  overflow-y:auto;
+}
+
+#modal img {
+  width: 300px;
+  border:5px solid #ff4f81;
+  border-radius: 15px;
+}
+
+.modal-btn {
+  background:#ff4f81;
+  color:white;
+  padding:15px;
+  margin:10px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  width:45%;
+  font-weight:bold;
+}
+
+.modal-btn:hover { background:#d90f4e; }
+
+.cancel-btn {
+  background:#555;
+}
+.cancel-btn:hover { background:#222; }
+
+</style>
+</head>
+<body>
+
+<h1>✨ Diseña tu pastel perfecto ✨</h1>
+
+<div style="display:flex; gap:20px; width:95%;">
+
+<div style="flex:3;">
+
+<div class="section">
+  <h3>Pastel base:</h3>
+  <select id="pastelBase">
+    <option value="Chocolate clásico,350">Chocolate clásico — $350</option>
+    <option value="Zanahoria con nuez,400">Zanahoria con nuez — $400</option>
+    <option value="Red Velvet,450">Red Velvet — $450</option>
+    <option value="Tres Leches,400">Tres Leches — $400</option>
+    <option value="Vainilla con frutos rojos,370">Vainilla con frutos rojos — $370</option>
+    <option value="Lavanda con miel,420">Lavanda con miel — $420</option>
+  </select>
+
+  <button class="add-btn" onclick="addFromSelect('pastelBase')">Agregar</button>
+</div>
+
+<div class="section">
+  <h3>Tamaño:</h3>
+  <select id="tamanos">
+    <option value="10 Personas,0">10 Personas — $0 extra</option>
+    <option value="20 Personas,300">20 Personas — +$300</option>
+    <option value="30 Personas,500">30 Personas — +$500</option>
+  </select>
+  <button class="add-btn" onclick="addFromSelect('tamanos')">Agregar</button>
+</div>
+
+<div class="section">
+  <h3>Pisos del pastel:</h3>
+  <select id="pisos">
+    <option value="1 Piso,0">1 piso — $0</option>
+    <option value="2 Pisos,150">2 pisos — +$150</option>
+    <option value="3 Pisos,300">3 pisos — +$300</option>
+    <option value="4 Pisos,450">4 pisos — +$450</option>
+  </select>
+  <button class="add-btn" onclick="addFromSelect('pisos')">Agregar</button>
+</div>
+
+<div class="section">
+  <h3>Tipo de leche:</h3>
+  <select id="leches">
+    <option value="Leche entera,25">Leche entera $25</option>
+    <option value="Leche deslactosada,28">Leche deslactosada $28</option>
+    <option value="Leche de avena,45">Leche de avena $45</option>
+    <option value="Leche de almendra,55">Leche de almendra $55</option>
+    <option value="Leche de soya,35">Leche de soya $35</option>
+    <option value="Leche de coco,60">Leche de coco $60</option>
+    <option value="Desnatada,40">Desnatada $40</option>
+    <option value="Leche sin lactosa,30">Leche sin lactosa $30</option>
+    <option value="Leche de nuez,61">Leche de nuez $61</option>
+    <option value="Leche de amaranto,65">Leche de amaranto $65</option>
+  </select>
+  <button class="add-btn" onclick="addFromSelect('leches')">Agregar</button>
+</div>
+
+<div class="section">
+  <h3>Toppings y decoración:</h3>
+  <select id="toppings">
+    <option value="Chispas chocolate,25">Chispas de chocolate $25</option>
+    <option value="Frutas frescas,45">Frutas frescas $45</option>
+    <option value="Crema batida,35">Crema batida $35</option>
+    <option value="Ganache,50">Ganache chocolate $50</option>
+    <option value="Jarabe,30">Jarabe $30</option>
+    <option value="Nueces,40">Nueces $40</option>
+  </select>
+  <button class="add-btn" onclick="addFromSelect('toppings')">Agregar</button>
+</div>
+
+</div>
+
+<div id="carrito">
+  <h3>🧺 Tu selección</h3>
+  <div id="items"></div>
+  <div class="total">Total: $<span id="total">0</span> MXN</div>
+
+  <button class="big-button" onclick="checkout()">Finalizar compra</button>
+  <button id="limpiar" class="big-button" onclick="limpiar()">Limpiar</button>
+  <button id="salir" class="big-button" onclick="location.href='login.html'">Salir</button>
+</div>
+
+</div>
+
+<div id="modal">
+  <div id="modalContent">
+    <h2>¡Gracias por tu compra! 🎉</h2>
+    <img id="modalImg" src="">
+    <h3>Total: $<span id="modalTotal"></span> MXN</h3>
+
+    <h3>Ingredientes seleccionados:</h3>
+    <ul id="modalList"></ul>
+
+    <div style="display:flex; justify-content:center;">
+      <button class="modal-btn" onclick="irPagar()">IR A PAGAR</button>
+      <button class="modal-btn" onclick="enviarWhatsapp()">WHATSAPP</button>
+      <button class="modal-btn cancel-btn" onclick="cerrarModal()">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+emailjs.init("Czy_2779Lt7c_3LA2");
+
+let carrito = [];
+
+function addFromSelect(id) {
+  let sel = document.getElementById(id);
+  let [name, price] = sel.value.split(",");
+  carrito.push({ name, price: parseInt(price) });
+  renderCarrito();
+}
+
+function removeItem(i) {
+  carrito.splice(i, 1);
+  renderCarrito();
+}
+
+function limpiar() {
+  carrito = [];
+  renderCarrito();
+}
+
+function renderCarrito() {
+  let itemsDiv = document.getElementById("items");
+  itemsDiv.innerHTML = "";
+
+  let total = 0;
+
+  carrito.forEach((item, i) => {
+    total += item.price;
+    itemsDiv.innerHTML += `
+      <div class="item">
+        <span>${item.name} — $${item.price}</span>
+        <button onclick="removeItem(${i})">X</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("total").innerText = total;
+  return total;
+}
+
+function generarExcel() {
+  let data = carrito.map(x => ({ Ingrediente: x.name, Precio: x.price }));
+  let wb = XLSX.utils.book_new();
+  let ws = XLSX.utils.json_to_sheet(data);
+  XLSX.utils.book_append_sheet(wb, ws, "Compra");
+  return XLSX.write(wb, { type: "base64" });
+}
+
+function checkout() {
+  let total = renderCarrito();
+  let excel = generarExcel();
+
+  emailjs.send("service_qywnwf6", "template_a8hfbjj", {
+    to_email: "jesusangeltepalcapareyes123@gmail.com",
+    message: JSON.stringify(carrito, null, 2),
+    total: total
+  });
+
+  mostrarModal(total);
+}
+
+function mostrarModal(total) {
+  let modal = document.getElementById("modal");
+  let list = document.getElementById("modalList");
+  let img = document.getElementById("modalImg");
+  let totalSpan = document.getElementById("modalTotal");
+
+  list.innerHTML = "";
+  totalSpan.innerText = total;
+
+  carrito.forEach(item => {
+    list.innerHTML += `<li>${item.name} — $${item.price}</li>`;
+  });
+
+ let pastelBase = carrito.find(x =>
+  x.name.includes("Chocolate") ||
+  x.name.includes("Zanahoria") ||
+  x.name.includes("Velvet") ||
+  x.name.includes("Leches") ||
+  x.name.includes("Vainilla") ||
+  x.name.includes("Lavanda")
+);
+
+let rutaImagen = "";
+
+if (pastelBase) {
+  if (pastelBase.name.includes("Chocolate")) rutaImagen = "chocolate_clasico.jpg";
+  if (pastelBase.name.includes("Zanahoria")) rutaImagen = "zanahoriac_nuez.jpg";
+  if (pastelBase.name.includes("Velvet")) rutaImagen = "red_velvet.jpg";
+  if (pastelBase.name.includes("Leches")) rutaImagen = "tres_leches.jpg";
+  if (pastelBase.name.includes("Vainilla")) rutaImagen = "vainillac_frutosrojos.jpg";
+  if (pastelBase.name.includes("Lavanda")) rutaImagen = "lavandacon_miel.jpg";
+}
+
+img.src = "imagenes/" + rutaImagen;
+
+  modal.style.display = "flex";
+}
+
+function cerrarModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function irPagar() {
+  window.open("pago.html", "_blank");
+}
+
+function enviarWhatsapp() {
+  let total = renderCarrito();
+  let mensaje = `🧁 NUEVO PEDIDO FELIX FELICES:\n\n`;
+
+  carrito.forEach(item => {
+    mensaje += `• ${item.name} — $${item.price}\n`;
+  });
+
+  mensaje += `\nTOTAL = $${total} MXN\n`;
+
+  window.open(
+    `https://wa.me/525539438613?text=${encodeURIComponent(mensaje)}`,
+    "_blank"
+  );
+}
+</script>
+
+</body>
+</html>

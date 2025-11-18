@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Félix Felices</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(180deg, #ffd1dc 0%, #ff9ab5 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+
+      /* MARCO DECORATIVO */
+      border: 12px solid #ff6b98;
+      box-sizing: border-box;
+    }
+
+    .menu-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      width: 60px;
+      height: 50px;
+      background: black;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 6px #222;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s ease;
+    }
+
+    .menu-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .menu-btn div {
+      width: 30px;
+      height: 4px;
+      background: white;
+      border-radius: 2px;
+    }
+
+    .menu-content {
+      display: none;
+      position: absolute;
+      top: 80px;
+      right: 20px;
+      background-color: rgba(0,0,0,0.85);
+      padding: 20px;
+      border-radius: 10px;
+      width: 260px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .menu-content h3, .menu-content p {
+      color: #fff;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    /* LOGO */
+    .logo {
+      width: 140px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0px 0px 4px rgba(255,255,255,0.7));
+    }
+
+    /* LOGIN BOX */
+    .login-box {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      width: 320px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.35);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      font-size: 14px;
+      color: #333;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #f5b642;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #ffcb57;
+    }
+
+    .toggle {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* POPUP */
+    .popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      display: none;
+      z-index: 999;
+      animation: fadeInOut 3s ease forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(-20px); }
+      10%, 90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+
+    .popup.success { background: #4CAF50; }
+    .popup.error { background: #f44336; }
+  </style>
+</head>
+<body>
+
+  <!-- BOTÓN DEL MENÚ -->
+  <button class="menu-btn" onclick="toggleMenu()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </button>
+
+  <!-- MENÚ DESPLEGABLE -->
+  <div class="menu-content" id="menuContent">
+    <h3>“Descubre la felicidad en cada bocado”</h3>
+    <h3>Quiénes somos</h3>
+    <p>Félix Felices es una pequeña empresa de panadería y pastelería que elabora productos de alta calidad con un toque creativo y tradicional.</p>
+    <h3>Visión</h3>
+    <p>Ser el negocio líder en la elaboración de pasteles, postres y productos de repostería en Tláhuac.</p>
+    <h3>Misión</h3>
+    <p>Ofrecer alta calidad combinando lo mágico, creativo y tradicional.</p>
+    <h3>Valores</h3>
+    <p>Calidad, compromiso, honestidad, innovación, trabajo en equipo, respeto, creatividad.</p>
+  </div>
+
+  <!-- LOGO -->
+  <img src="imagenes/login.jpg.jpeg" alt="Logo Félix Felices" class="logo">
+
+  <!-- CAJA LOGIN -->
+  <div class="login-box">
+    <h2 id="formTitle">Iniciar Sesión</h2>
+    <input type="email" id="email" placeholder="Ejemplo: usuario@gmail.com" required>
+    <input type="password" id="password" placeholder="Contraseña (mínimo 6 caracteres)" required>
+    <button id="loginBtn">Iniciar Sesión</button>
+    <button id="registerBtn" style="display:none;">Registrarse</button>
+    <p class="toggle" id="toggleForm">¿No tienes cuenta? Regístrate</p>
+  </div>
+
+  <!-- POPUP -->
+  <div id="popup" class="popup"></div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyACqVwfYlAe1C4O3y1bta9QTg5FaH0UJZs",
+      authDomain: "felix-felices-90285.firebaseapp.com",
+      projectId: "felix-felices-90285",
+      storageBucket: "felix-felices-90285.firebasestorage.app",
+      messagingSenderId: "481003289831",
+      appId: "1:481003289831:web:9311f0cf2cfdf230b2f642",
+      measurementId: "G-97QVD4TPH3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
+    const toggleForm = document.getElementById("toggleForm");
+    const formTitle = document.getElementById("formTitle");
+    const popup = document.getElementById("popup");
+
+    let isLogin = true;
+
+    function showPopup(message, type) {
+      popup.textContent = message;
+      popup.className = `popup ${type}`;
+      popup.style.display = "block";
+      setTimeout(() => popup.style.display = "none", 3000);
+    }
+
+    toggleForm.addEventListener("click", () => {
+      isLogin = !isLogin;
+      formTitle.textContent = isLogin ? "Iniciar Sesión" : "Registro de Usuario";
+      loginBtn.style.display = isLogin ? "block" : "none";
+      registerBtn.style.display = isLogin ? "none" : "block";
+      toggleForm.textContent = isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión";
+    });
+
+    function validarPassword(password) {
+      const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=]).{6,}$/;
+      return regex.test(password);
+    }
+
+    loginBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showPopup("Inicio de sesión exitoso 🎂", "success");
+        setTimeout(() => window.location.href = "index.html", 1000);
+      } catch (error) {
+        showPopup("Error al iniciar sesión: " + error.message, "error");
+      }
+    });
+
+    registerBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!validarPassword(password)) {
+        showPopup("La contraseña debe tener mayúscula, número y símbolo.", "error");
+        return;
+      }
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        showPopup("Usuario registrado correctamente 🎉", "success");
+      } catch (error) {
+        showPopup("Error al registrar: " + error.message, "error");
+      }
+    });
+
+    window.toggleMenu = function() {
+      const menu = document.getElementById("menuContent");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+  </script>
+
+</body>
+</html>

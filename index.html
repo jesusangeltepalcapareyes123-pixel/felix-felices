@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Félix Felices - Inicio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(180deg, #ffb3c6 0%, #fff2f7 100%);
+      color: #333;
+      text-align: center;
+      overflow-x: hidden;
+
+      /* === MARCO GENERAL === */
+      border: 12px solid #ff6b98;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.8em;
+      color: #ff4f81;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+
+    header img {
+      width: 90px;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    .botones {
+      margin: 25px;
+    }
+
+    .botones button {
+      background: #ff4f81;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 10px rgba(255, 79, 129, 0.4);
+    }
+
+    .botones button:hover {
+      background: #ff2d6a;
+      transform: scale(1.1);
+    }
+
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      padding: 40px;
+      justify-items: center;
+    }
+
+    .tarjeta {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      background-color: white;
+      transition: transform 0.4s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      width: 260px;
+    }
+
+    .tarjeta img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .tarjeta:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+    }
+
+    .tarjeta:hover img {
+      transform: scale(1.15);
+    }
+
+    .info {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .tarjeta:hover .info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    footer {
+      margin-top: 30px;
+      padding: 15px;
+      background: #ff4f81;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px 8px 0 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>“Descubre la felicidad en cada bocado”</h1>
+    <img src="imagenes/login.jpg.jpeg" alt="Logo Félix Felices">
+  </header>
+
+  <div class="botones">
+    <button onclick="window.location.href='compras.html'">Ir a comprar pastel</button>
+    <button onclick="window.location.href='login.html'">Salir</button>
+  </div>
+
+  <section class="galeria">
+    <div class="tarjeta">
+      <img src="imagenes/chocolate_clasico.jpg" alt="Pastel Chocolate Clásico">
+      <div class="info">🍫 Pastel de Chocolate Clásico – húmedo, intenso y con ganache suave.</div>
+    </div>
+
+    <div class="tarjeta">
+      <img src="imagenes/zanahoriac_nuez.jpg" alt="Pastel Zanahoria con Nuez">
+      <div class="info">🥕 Pastel de Zanahoria con Nuez – sabor especiado con cobertura cremosa.</div>
+    </div>
+
+    <div class="tarjeta">
+      <img src="imagenes/tres_leches.jpg" alt="Pastel Tres Leches">
+      <div class="info">🥛 Pastel Tres Leches – esponjoso, tradicional y lleno de dulzura mexicana.</div>
+    </div>
+
+    <div class="tarjeta">
+      <img src="imagenes/vainillac_frutosrojos.jpg" alt="Pastel Vainilla y Frutos Rojos">
+      <div class="info">🍓 Pastel de Vainilla con Frutos Rojos – ligero, elegante y lleno de color.</div>
+    </div>
+
+    <div class="tarjeta">
+      <img src="imagenes/lavandacon_miel.jpg" alt="Pastel Lavanda y Miel">
+      <div class="info">🌸 Pastel de Lavanda y Miel – una combinación floral, delicada y dulce.</div>
+    </div>
+
+    <div class="tarjeta">
+      <img src="imagenes/red_velvet.jpg" alt="Pastel Red Velvet">
+      <div class="info">❤️ Pastel Red Velvet – clásico americano con betún de queso crema.</div>
+    </div>
+  </section>
+
+  <footer>
+    Félix Felices © 2025 — Amor en cada pastel 💕
+  </footer>
+
+</body>
+</html>
